@@ -1,0 +1,791 @@
+@prefix athena: <https://w3id.org/athena/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/athena/core>
+    a owl:Ontology ;
+    dcterms:title "ATHENA-Core Ontology"@en ;
+    dcterms:description """
+Core ontology for the ATHENA framework: countermeAsures for THreat IntElligence
+in Multi-DomaiN operAtions. The ontology represents the four ATHENA axes
+(Cybersecurity Process, Defensive Capability, Cybersecurity Level and Effect
+Dimension), threat-model concepts, security controls, countermeasures,
+assessments, evidence and n-ary mappings used for countermeasure reasoning.
+This version is intentionally scenario-independent and is intended to be
+specialized through domain ontologies and operational knowledge bases.
+"""@en ;
+    dcterms:creator "ATHENA Research Team"@en ;
+    dcterms:issued "2026-07-31"^^xsd:date ;
+    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <https://w3id.org/athena/core/0.1.0> ;
+    rdfs:seeAlso <https://w3id.org/athena/core> .
+
+#################################################################
+# Annotation properties
+#################################################################
+
+athena:definition
+    a owl:AnnotationProperty ;
+    rdfs:label "definition"@en .
+
+athena:usageNote
+    a owl:AnnotationProperty ;
+    rdfs:label "usage note"@en .
+
+#################################################################
+# Top-level classes
+#################################################################
+
+athena:ATHENAEntity
+    a owl:Class ;
+    rdfs:label "ATHENA entity"@en ;
+    athena:definition "Top-level class for all entities represented in the ATHENA knowledge base."@en .
+
+athena:OperationalContext
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Operational context"@en ;
+    athena:definition "Context in which a threat, defensive action or decision is evaluated."@en .
+
+athena:Scenario
+    a owl:Class ;
+    rdfs:subClassOf athena:OperationalContext ;
+    rdfs:label "Scenario"@en ;
+    athena:definition "A bounded operational situation used to organize threats, assets, effects, assessments and countermeasures."@en .
+
+athena:Organization
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Organization"@en ;
+    athena:definition "Civil, military, public, private or hybrid organizational entity involved in an ATHENA context."@en .
+
+athena:Tool
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Tool"@en ;
+    athena:definition "Technical system, software, platform, sensor, analytical component or execution mechanism."@en .
+
+athena:IntelligenceProcess
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Intelligence process"@en ;
+    athena:definition "Process for collecting, processing, correlating, evaluating or disseminating intelligence."@en .
+
+#################################################################
+# Threat model
+#################################################################
+
+athena:ThreatEntity
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Threat entity"@en .
+
+athena:ThreatEvent
+    a owl:Class ;
+    rdfs:subClassOf athena:ThreatEntity ;
+    rdfs:label "Threat event"@en ;
+    athena:definition "Observed, inferred or hypothetical event capable of producing adverse effects in one or more domains."@en .
+
+athena:ThreatActor
+    a owl:Class ;
+    rdfs:subClassOf athena:ThreatEntity ;
+    rdfs:label "Threat actor"@en ;
+    athena:definition "Actor that initiates, supports or coordinates an adversarial action."@en .
+
+athena:Capability
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Capability"@en .
+
+athena:AdversarialCapability
+    a owl:Class ;
+    rdfs:subClassOf athena:Capability ;
+    rdfs:label "Adversarial capability"@en ;
+    athena:definition "Capability used by an adversary to achieve an offensive objective."@en .
+
+athena:DefensiveCapability
+    a owl:Class ;
+    rdfs:subClassOf athena:Capability ;
+    rdfs:label "Defensive capability"@en ;
+    athena:definition "Authority or ability to employ assets, people, processes or technologies to counter multi-domain threats."@en .
+
+athena:Infrastructure
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Infrastructure"@en ;
+    athena:definition "Physical, virtual or socio-technical infrastructure used by an adversary or relied upon by a victim."@en .
+
+athena:Victim
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Victim"@en ;
+    athena:definition "Individual, organization, system, community or mission affected by a threat event."@en .
+
+athena:Asset
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Asset"@en .
+
+athena:MultiDomainAsset
+    a owl:Class ;
+    rdfs:subClassOf athena:Asset ;
+    rdfs:label "Multi-domain asset"@en ;
+    athena:definition "Asset whose operation, value or security depends on capabilities from two or more domains."@en .
+
+athena:AttackTechnique
+    a owl:Class ;
+    rdfs:subClassOf athena:ThreatEntity ;
+    rdfs:label "Attack technique"@en .
+
+athena:Vulnerability
+    a owl:Class ;
+    rdfs:subClassOf athena:ThreatEntity ;
+    rdfs:label "Vulnerability"@en .
+
+athena:ThreatIndicator
+    a owl:Class ;
+    rdfs:subClassOf athena:ThreatEntity ;
+    rdfs:label "Threat indicator"@en .
+
+#################################################################
+# ATHENA axes
+#################################################################
+
+athena:ATHENAAxisElement
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "ATHENA axis element"@en .
+
+athena:CybersecurityProcess
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAAxisElement ;
+    rdfs:label "Cybersecurity process"@en ;
+    athena:definition "Lifecycle-based cybersecurity process used to organize governance, detection, response and prevention activities."@en .
+
+athena:OperationalDomain
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAAxisElement ;
+    rdfs:label "Operational domain"@en ;
+    athena:definition "Operational domain in which a capability is employed or an effect is generated."@en .
+
+athena:CybersecurityLevel
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAAxisElement ;
+    rdfs:label "Cybersecurity level"@en ;
+    athena:definition "Organizational, intelligence or tool-related layer used to evaluate readiness and resilience."@en .
+
+athena:EffectDimension
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAAxisElement ;
+    rdfs:label "Effect dimension"@en ;
+    athena:definition "Dimension in which the consequences of one or more actions are manifested."@en .
+
+#################################################################
+# Security structure
+#################################################################
+
+athena:SecurityControl
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Security control"@en ;
+    athena:definition "Safeguard, requirement, function, mechanism or practice used to modify cyber risk."@en .
+
+athena:SecurityFunction
+    a owl:Class ;
+    rdfs:subClassOf athena:SecurityControl ;
+    rdfs:label "Security function"@en .
+
+athena:SecurityCategory
+    a owl:Class ;
+    rdfs:subClassOf athena:SecurityControl ;
+    rdfs:label "Security category"@en .
+
+athena:SecuritySubcategory
+    a owl:Class ;
+    rdfs:subClassOf athena:SecurityControl ;
+    rdfs:label "Security subcategory"@en .
+
+athena:Countermeasure
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Countermeasure"@en ;
+    athena:definition "Defensive action or configuration change deployed to mitigate risk, disrupt an adversarial capability or reduce multi-domain effects."@en .
+
+#################################################################
+# Assessments and decision support
+#################################################################
+
+athena:Assessment
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Assessment"@en .
+
+athena:EffectAssessment
+    a owl:Class ;
+    rdfs:subClassOf athena:Assessment ;
+    rdfs:label "Effect assessment"@en .
+
+athena:LevelAssessment
+    a owl:Class ;
+    rdfs:subClassOf athena:Assessment ;
+    rdfs:label "Level assessment"@en .
+
+athena:ControlAssessment
+    a owl:Class ;
+    rdfs:subClassOf athena:Assessment ;
+    rdfs:label "Control assessment"@en .
+
+athena:CapabilityAssessment
+    a owl:Class ;
+    rdfs:subClassOf athena:Assessment ;
+    rdfs:label "Capability assessment"@en .
+
+athena:Recommendation
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ;
+    rdfs:label "Recommendation"@en ;
+    athena:definition "Decision-support result that ranks or proposes one or more countermeasures."@en .
+
+athena:ATHENAMapping
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity ,
+        [ a owl:Restriction ;
+          owl:onProperty athena:hasProcess ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass athena:CybersecurityProcess
+        ] ,
+        [ a owl:Restriction ;
+          owl:onProperty athena:hasDefensiveCapability ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass athena:DefensiveCapability
+        ] ,
+        [ a owl:Restriction ;
+          owl:onProperty athena:hasSecurityLevel ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass athena:CybersecurityLevel
+        ] ,
+        [ a owl:Restriction ;
+          owl:onProperty athena:hasEffectDimension ;
+          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass athena:EffectDimension
+        ] ,
+        [ a owl:Restriction ;
+          owl:onProperty athena:recommendsCountermeasure ;
+          owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+          owl:onClass athena:Countermeasure
+        ] ;
+    rdfs:label "ATHENA mapping"@en ;
+    athena:definition "N-ary relation representing a cell of the ATHENA P × D × L × E model and its associated countermeasure alternatives."@en .
+
+#################################################################
+# Evidence and provenance
+#################################################################
+
+athena:Evidence
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity, prov:Entity ;
+    rdfs:label "Evidence"@en .
+
+athena:Source
+    a owl:Class ;
+    rdfs:subClassOf athena:ATHENAEntity, prov:Entity ;
+    rdfs:label "Source"@en .
+
+#################################################################
+# Object properties
+#################################################################
+
+athena:hasScenario
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range athena:Scenario ;
+    rdfs:label "has scenario"@en .
+
+athena:hasThreatEvent
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Scenario ;
+    rdfs:range athena:ThreatEvent ;
+    rdfs:label "has threat event"@en .
+
+athena:performedBy
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:ThreatActor ;
+    rdfs:label "performed by"@en .
+
+athena:usesAdversarialCapability
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:AdversarialCapability ;
+    rdfs:label "uses adversarial capability"@en .
+
+athena:usesInfrastructure
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:Infrastructure ;
+    rdfs:label "uses infrastructure"@en .
+
+athena:targetsVictim
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:Victim ;
+    rdfs:label "targets victim"@en .
+
+athena:targetsAsset
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:Asset ;
+    rdfs:label "targets asset"@en .
+
+athena:usesTechnique
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:AttackTechnique ;
+    rdfs:label "uses technique"@en .
+
+athena:exploitsVulnerability
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:Vulnerability ;
+    rdfs:label "exploits vulnerability"@en .
+
+athena:indicatedBy
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:ThreatIndicator ;
+    rdfs:label "indicated by"@en .
+
+athena:affectsDomain
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range athena:OperationalDomain ;
+    rdfs:label "affects domain"@en .
+
+athena:producesEffect
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:EffectDimension ;
+    rdfs:label "produces effect"@en .
+
+athena:compromisesControl
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:SecurityControl ;
+    rdfs:label "compromises control"@en .
+
+athena:compromisesLevel
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range athena:CybersecurityLevel ;
+    rdfs:label "compromises level"@en .
+
+athena:implementsControl
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:SecurityControl ;
+    rdfs:label "implements control"@en .
+
+athena:mitigatesThreat
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:ThreatEvent ;
+    rdfs:label "mitigates threat"@en .
+
+athena:mitigatesEffect
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:EffectDimension ;
+    rdfs:label "mitigates effect"@en .
+
+athena:strengthensLevel
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:CybersecurityLevel ;
+    rdfs:label "strengthens level"@en .
+
+athena:providesCapability
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:DefensiveCapability ;
+    rdfs:label "provides capability"@en .
+
+athena:requiresOrganization
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:Organization ;
+    rdfs:label "requires organization"@en .
+
+athena:usesTool
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:Tool ;
+    rdfs:label "uses tool"@en .
+
+athena:dependsOn
+    a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:Countermeasure ;
+    rdfs:label "depends on"@en .
+
+athena:conflictsWith
+    a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range athena:Countermeasure ;
+    rdfs:label "conflicts with"@en .
+
+athena:hasAssessment
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range athena:Assessment ;
+    rdfs:label "has assessment"@en .
+
+athena:assessesEntity
+    a owl:ObjectProperty ;
+    rdfs:domain athena:Assessment ;
+    rdfs:range athena:ATHENAEntity ;
+    rdfs:label "assesses entity"@en .
+
+athena:hasProcess
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:CybersecurityProcess ;
+    rdfs:label "has process"@en .
+
+athena:hasDefensiveCapability
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:DefensiveCapability ;
+    rdfs:label "has defensive capability"@en .
+
+athena:hasSecurityLevel
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:CybersecurityLevel ;
+    rdfs:label "has security level"@en .
+
+athena:hasEffectDimension
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:EffectDimension ;
+    rdfs:label "has effect dimension"@en .
+
+athena:recommendsCountermeasure
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:Countermeasure ;
+    rdfs:label "recommends countermeasure"@en .
+
+athena:generatedRecommendation
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range athena:Recommendation ;
+    rdfs:label "generated recommendation"@en .
+
+athena:supportedByEvidence
+    a owl:ObjectProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range athena:Evidence ;
+    rdfs:label "supported by evidence"@en .
+
+athena:derivedFromSource
+    a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range athena:Source ;
+    rdfs:label "derived from source"@en .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+athena:identifier
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "identifier"@en .
+
+athena:name
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "name"@en .
+
+athena:description
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "description"@en .
+
+athena:numericValue
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Assessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "numeric value"@en .
+
+athena:confidence
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "confidence"@en ;
+    athena:usageNote "Recommended range: 0.0–1.0."@en .
+
+athena:likelihood
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ThreatEvent ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "likelihood"@en .
+
+athena:impactValue
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:EffectAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "impact value"@en .
+
+athena:currentLevel
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:LevelAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "current level"@en .
+
+athena:requiredLevel
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:LevelAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "required level"@en .
+
+athena:levelGap
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:LevelAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "level gap"@en .
+
+athena:controlValue
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ControlAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "control value"@en .
+
+athena:capabilityValue
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:CapabilityAssessment ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "capability value"@en .
+
+athena:cost
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "cost"@en .
+
+athena:deploymentTime
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range xsd:duration ;
+    rdfs:label "deployment time"@en .
+
+athena:operationalImpact
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "operational impact"@en .
+
+athena:automationLevel
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Countermeasure ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "automation level"@en .
+
+athena:applicabilityScore
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAMapping ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "applicability score"@en .
+
+athena:rank
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Recommendation ;
+    rdfs:range xsd:positiveInteger ;
+    rdfs:label "rank"@en .
+
+athena:score
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Recommendation ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "score"@en .
+
+athena:rationale
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:Recommendation ;
+    rdfs:range xsd:string ;
+    rdfs:label "rationale"@en .
+
+athena:validFrom
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "valid from"@en .
+
+athena:validTo
+    a owl:DatatypeProperty ;
+    rdfs:domain athena:ATHENAEntity ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "valid to"@en .
+
+#################################################################
+# Canonical vocabulary: Cybersecurity Processes
+#################################################################
+
+athena:Govern
+    a owl:NamedIndividual, athena:CybersecurityProcess ;
+    skos:prefLabel "Govern"@en ;
+    athena:definition "Establish governance, rules of engagement, risk ownership and cross-domain coordination."@en .
+
+athena:Detect
+    a owl:NamedIndividual, athena:CybersecurityProcess ;
+    skos:prefLabel "Detect"@en ;
+    athena:definition "Identify, ingest, correlate and contextualize threat information and anomalous behavior."@en .
+
+athena:Respond
+    a owl:NamedIndividual, athena:CybersecurityProcess ;
+    skos:prefLabel "Respond"@en ;
+    athena:definition "Coordinate and execute actions to contain, mitigate and recover from a detected threat."@en .
+
+athena:Prevent
+    a owl:NamedIndividual, athena:CybersecurityProcess ;
+    skos:prefLabel "Prevent"@en ;
+    athena:definition "Reduce exposure and inhibit the occurrence or propagation of adverse events."@en .
+
+#################################################################
+# Canonical vocabulary: Operational Domains and Capabilities
+#################################################################
+
+athena:CyberDomain
+    a owl:NamedIndividual, athena:OperationalDomain ;
+    skos:prefLabel "Cyber"@en .
+
+athena:LandDomain
+    a owl:NamedIndividual, athena:OperationalDomain ;
+    skos:prefLabel "Land"@en .
+
+athena:SeaDomain
+    a owl:NamedIndividual, athena:OperationalDomain ;
+    skos:prefLabel "Sea"@en .
+
+athena:AirDomain
+    a owl:NamedIndividual, athena:OperationalDomain ;
+    skos:prefLabel "Air"@en .
+
+athena:SpaceDomain
+    a owl:NamedIndividual, athena:OperationalDomain ;
+    skos:prefLabel "Space"@en .
+
+athena:CyberDefensiveCapability
+    a owl:NamedIndividual, athena:DefensiveCapability ;
+    skos:prefLabel "Cyber defensive capability"@en ;
+    athena:affectsDomain athena:CyberDomain .
+
+athena:LandDefensiveCapability
+    a owl:NamedIndividual, athena:DefensiveCapability ;
+    skos:prefLabel "Land defensive capability"@en ;
+    athena:affectsDomain athena:LandDomain .
+
+athena:SeaDefensiveCapability
+    a owl:NamedIndividual, athena:DefensiveCapability ;
+    skos:prefLabel "Sea defensive capability"@en ;
+    athena:affectsDomain athena:SeaDomain .
+
+athena:AirDefensiveCapability
+    a owl:NamedIndividual, athena:DefensiveCapability ;
+    skos:prefLabel "Air defensive capability"@en ;
+    athena:affectsDomain athena:AirDomain .
+
+athena:SpaceDefensiveCapability
+    a owl:NamedIndividual, athena:DefensiveCapability ;
+    skos:prefLabel "Space defensive capability"@en ;
+    athena:affectsDomain athena:SpaceDomain .
+
+#################################################################
+# Canonical vocabulary: Cybersecurity Levels
+#################################################################
+
+athena:OrganizationLevel
+    a owl:NamedIndividual, athena:CybersecurityLevel ;
+    skos:prefLabel "Organization"@en ;
+    athena:definition "Governance, policy, roles, responsibilities, trust relationships and human collaboration."@en .
+
+athena:IntelligenceLevel
+    a owl:NamedIndividual, athena:CybersecurityLevel ;
+    skos:prefLabel "Intelligence"@en ;
+    athena:definition "Decision-making layer integrating cyber threat intelligence and cyber risk management."@en .
+
+athena:ToolLevel
+    a owl:NamedIndividual, athena:CybersecurityLevel ;
+    skos:prefLabel "Tool"@en ;
+    athena:definition "Technical execution layer comprising platforms, analytics, automation and defensive agents."@en .
+
+#################################################################
+# Canonical vocabulary: Effect Dimensions
+#################################################################
+
+athena:PhysicalEffect
+    a owl:NamedIndividual, athena:EffectDimension ;
+    skos:prefLabel "Physical"@en ;
+    athena:definition "Effect on physical assets, infrastructure, people, environment, societies or operational behavior."@en .
+
+athena:VirtualEffect
+    a owl:NamedIndividual, athena:EffectDimension ;
+    skos:prefLabel "Virtual"@en ;
+    athena:definition "Effect on data, software, communications, computing resources or other intangible digital entities."@en .
+
+athena:CognitiveEffect
+    a owl:NamedIndividual, athena:EffectDimension ;
+    skos:prefLabel "Cognitive"@en ;
+    athena:definition "Effect on perception, trust, situational awareness, decision-making or behavior."@en .
+
+#################################################################
+# Disjointness axioms
+#################################################################
+
+[] a owl:AllDisjointClasses ;
+   owl:members (
+       athena:CybersecurityProcess
+       athena:OperationalDomain
+       athena:CybersecurityLevel
+       athena:EffectDimension
+   ) .
+
+[] a owl:AllDifferent ;
+   owl:distinctMembers (
+       athena:Govern
+       athena:Detect
+       athena:Respond
+       athena:Prevent
+   ) .
+
+[] a owl:AllDifferent ;
+   owl:distinctMembers (
+       athena:CyberDomain
+       athena:LandDomain
+       athena:SeaDomain
+       athena:AirDomain
+       athena:SpaceDomain
+   ) .
+
+[] a owl:AllDifferent ;
+   owl:distinctMembers (
+       athena:OrganizationLevel
+       athena:IntelligenceLevel
+       athena:ToolLevel
+   ) .
+
+[] a owl:AllDifferent ;
+   owl:distinctMembers (
+       athena:PhysicalEffect
+       athena:VirtualEffect
+       athena:CognitiveEffect
+   ) .

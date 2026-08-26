@@ -1,0 +1,1 @@
+record_kind,object_id,class,name,description,scenario_id,source_object_id,relationship_type,target_object_id,attribute_key,attribute_value,datatype,unit,confidence,assertion_type,source_type,source_ref,opencti_id,stix_id,stix_type,external_id,observed_at,valid_from,valid_to,status,classification,mandatory,created_by,notes

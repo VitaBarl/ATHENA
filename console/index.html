@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ATHENA MDO CTI Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigazione principale">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">A</div>
+          <div>
+            <strong>ATHENA</strong>
+            <span>MDO CTI Console</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a class="active" href="#overview" data-dashboard-target="athena" aria-label="Vista overview">
+            <span class="nav-icon grid-icon" aria-hidden="true"></span>
+            Overview
+          </a>
+          <a href="#new-scenario" data-dashboard-target="athena" aria-label="Inserisci un nuovo scenario">
+            <span class="nav-icon vuln-icon" aria-hidden="true"></span>
+            Nuovo Scenario
+          </a>
+          <a href="#matrix" data-dashboard-target="athena" aria-label="ATHENA Matrix, ranking e decision">
+            <span class="nav-icon stack-icon" aria-hidden="true"></span>
+            ATHENA Matrix
+          </a>
+          <a href="#vulnerabilities" data-dashboard-target="athena" aria-label="Vista vulnerabilita">
+            <span class="nav-icon vuln-icon" aria-hidden="true"></span>
+            Vulnerabilities
+          </a>
+          <a href="#simulation" data-dashboard-target="athena" aria-label="Vista simulazione">
+            <span class="nav-icon sim-icon" aria-hidden="true"></span>
+            Simulation
+          </a>
+          <a href="#kg-schema" data-dashboard-target="athena" aria-label="Vista schema knowledge graph">
+            <span class="nav-icon matrix-icon" aria-hidden="true"></span>
+            KG Schema v0.1
+          </a>
+          <span class="nav-group-label">Frameworks</span>
+          <a href="#framework-disarm" data-dashboard-target="athena" aria-label="Framework DISARM">
+            <span class="nav-icon disarm-icon" aria-hidden="true"></span>
+            DISARM
+          </a>
+          <a href="#framework-attack" data-dashboard-target="athena" aria-label="Framework MITRE ATT&amp;CK">
+            <span class="nav-icon matrix-icon" aria-hidden="true"></span>
+            MITRE ATT&amp;CK
+          </a>
+          <a href="#framework-atlas" data-dashboard-target="athena" aria-label="Framework MITRE ATLAS">
+            <span class="nav-icon matrix-icon" aria-hidden="true"></span>
+            MITRE ATLAS
+          </a>
+          <a href="#framework-space-shield" data-dashboard-target="athena" aria-label="Framework ESA SPACE-SHIELD">
+            <span class="nav-icon matrix-icon" aria-hidden="true"></span>
+            ESA SPACE-SHIELD
+          </a>
+          <a href="#nato-dashboard" data-dashboard-target="nato" aria-label="Vista NATO case">
+            <span class="nav-icon shield-icon" aria-hidden="true"></span>
+            NATO MDO
+          </a>
+        </nav>
+
+        <div class="sidebar-status">
+          <span>KB status</span>
+          <strong id="kbStatus">loading</strong>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p id="pageEyebrow" class="eyebrow">MDO CTI Console</p>
+            <h1 id="pageTitle">ATHENA</h1>
+          </div>
+          <div class="topbar-actions">
+            <div class="dashboard-switch" aria-label="Selezione dashboard">
+              <button class="dashboard-tab is-active" type="button" data-dashboard-target="athena">ATHENA</button>
+              <button class="dashboard-tab" type="button" data-dashboard-target="nato">NATO Case</button>
+            </div>
+            <label class="select-field">
+              <span>Scenario</span>
+              <select id="scenarioSelect"></select>
+            </label>
+            <button id="recalculateBtn" class="primary-button" type="button">
+              <span class="button-icon refresh-icon" aria-hidden="true"></span>
+              Recalculate
+            </button>
+          </div>
+        </header>
+
+        <div id="athenaDashboard" class="dashboard-view is-active">
+        <section id="overview" class="overview-grid" aria-label="Sintesi scenario">
+          <article class="summary-panel threat-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Scenario</p>
+                <h2 id="scenarioName">-</h2>
+              </div>
+              <span id="scenarioId" class="pill">-</span>
+            </div>
+            <div class="entity-strip" id="entityStrip"></div>
+          </article>
+
+          <article class="metric-panel">
+            <p class="eyebrow">Recommendation</p>
+            <div class="recommendation-score">
+              <span id="bestScore">--</span>
+              <small>residual score</small>
+            </div>
+            <h2 id="bestName">-</h2>
+            <p id="bestMeta" class="muted-text">-</p>
+          </article>
+
+          <article class="controls-panel">
+            <div class="panel-head tight">
+              <div>
+                <p class="eyebrow">Decision policy</p>
+                <h2>Weights &amp; constraints</h2>
+              </div>
+            </div>
+            <div class="control-stack">
+              <label>
+                <span>Impact gap <b id="w1Out">0.45</b></span>
+                <input id="w1" type="range" min="0" max="1" step="0.05" value="0.45" />
+              </label>
+              <label>
+                <span>Control residual <b id="w2Out">0.35</b></span>
+                <input id="w2" type="range" min="0" max="1" step="0.05" value="0.35" />
+              </label>
+              <label>
+                <span>Level gap <b id="w3Out">0.20</b></span>
+                <input id="w3" type="range" min="0" max="1" step="0.05" value="0.20" />
+              </label>
+              <div class="inline-controls">
+                <label>
+                  <span>Budget</span>
+                  <input id="budget" type="number" min="1" max="20" step="1" value="10" />
+                </label>
+                <label>
+                  <span>Max availability</span>
+                  <select id="availability">
+                    <option value="none">none</option>
+                    <option value="low">low</option>
+                    <option value="medium" selected>medium</option>
+                    <option value="high">high</option>
+                  </select>
+                </label>
+              </div>
+              <div class="weight-rationale">
+                <div>
+                  <strong>w1 0.45</strong>
+                  <span>prioritizza la riduzione dell'impatto su cognitive, physical e virtual.</span>
+                </div>
+                <div>
+                  <strong>w2 0.35</strong>
+                  <span>pesa i controlli compromessi ancora non coperti dalla contromisura.</span>
+                </div>
+                <div>
+                  <strong>w3 0.20</strong>
+                  <span>considera il gap di maturita' organization, intelligence e tool.</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="new-scenario" class="scenario-builder-section" aria-label="Inserimento nuovo scenario e calcolo del rischio">
+          <article class="scenario-builder-intro panel-card">
+            <div>
+              <p class="eyebrow">Scenario intake</p>
+              <h2>Inserisci un nuovo scenario per il calcolo del rischio</h2>
+              <p>Compila il contesto e i quattro vettori ATHENA. Il sistema calcola il rischio lordo, salva lo scenario localmente e genera il ranking delle contromisure compatibili.</p>
+            </div>
+            <div class="live-risk-card" id="newScenarioRiskCard">
+              <span>Rischio lordo stimato</span>
+              <strong id="newScenarioRiskScore">0</strong>
+              <b id="newScenarioRiskBand">BASSO</b>
+              <div class="risk-meter"><i id="newScenarioRiskBar"></i></div>
+              <small>0–100 · prima delle contromisure</small>
+            </div>
+          </article>
+
+          <form id="newScenarioForm" class="scenario-builder-form">
+            <article class="builder-card identity-card">
+              <div class="panel-head tight"><div><p class="eyebrow">01 · Context</p><h2>Identità e missione</h2></div></div>
+              <div class="builder-fields two-cols">
+                <label><span>Scenario ID</span><input id="newScenarioId" name="scenario_id" required pattern="[A-Za-z0-9_-]+" /></label>
+                <label><span>Nome scenario</span><input id="newScenarioName" name="name" required placeholder="Es. Compromissione SATCOM multi-dominio" /></label>
+                <label class="wide"><span>Descrizione</span><textarea id="newScenarioDescription" name="description" rows="3" placeholder="Evento, contesto operativo e conseguenze attese..."></textarea></label>
+                <label><span>Missione</span><input id="newScenarioMission" name="mission" placeholder="Es. Continuità delle comunicazioni" /></label>
+                <label><span>Asset principale</span><input id="newScenarioAsset" name="asset" required placeholder="Es. Terminali SATCOM" /></label>
+                <label><span>Adversary</span><input id="newScenarioAdversary" name="adversary" placeholder="Attore noto, sospetto o unknown" /></label>
+                <label><span>Capability offensiva</span><input id="newScenarioCapability" name="capability" required placeholder="Es. Supply-chain compromise" /></label>
+                <label><span>Classification</span><select id="newScenarioClassification"><option>UNCLASSIFIED</option><option>RESTRICTED</option><option>CONFIDENTIAL</option></select></label>
+                <label><span>Confidence <output id="newConfidenceOut">0.75</output></span><input id="newScenarioConfidence" type="range" min="0" max="1" step="0.05" value="0.75" /></label>
+              </div>
+            </article>
+
+            <article class="builder-card">
+              <div class="panel-head tight"><div><p class="eyebrow">02 · cov</p><h2>Controlli compromessi</h2></div><span class="pill">0 integro · 1 compromesso</span></div>
+              <div class="builder-range-grid" id="newControlRanges">
+                <label><span>DE.AE <output>0.50</output></span><input data-new-control="DE_AE" type="range" min="0" max="1" step="0.05" value="0.50" /></label>
+                <label><span>DE.CM <output>0.50</output></span><input data-new-control="DE_CM" type="range" min="0" max="1" step="0.05" value="0.50" /></label>
+                <label><span>RS.CO <output>0.40</output></span><input data-new-control="RS_CO" type="range" min="0" max="1" step="0.05" value="0.40" /></label>
+                <label><span>RS.AN <output>0.40</output></span><input data-new-control="RS_AN" type="range" min="0" max="1" step="0.05" value="0.40" /></label>
+                <label><span>PR.AC <output>0.40</output></span><input data-new-control="PR_AC" type="range" min="0" max="1" step="0.05" value="0.40" /></label>
+                <label><span>PR.PT <output>0.40</output></span><input data-new-control="PR_PT" type="range" min="0" max="1" step="0.05" value="0.40" /></label>
+                <label><span>ID.AM <output>0.35</output></span><input data-new-control="ID_AM" type="range" min="0" max="1" step="0.05" value="0.35" /></label>
+                <label><span>GV.RM <output>0.35</output></span><input data-new-control="GV_RM" type="range" min="0" max="1" step="0.05" value="0.35" /></label>
+              </div>
+            </article>
+
+            <div class="builder-columns">
+              <article class="builder-card">
+                <div class="panel-head tight"><div><p class="eyebrow">03 · caexp</p><h2>Esposizione per dominio</h2></div></div>
+                <div class="builder-range-grid single" id="newDomainRanges">
+                  <label><span>Cyber <output>0.70</output></span><input data-new-domain="cyber" type="range" min="0" max="1" step="0.05" value="0.70" /></label>
+                  <label><span>Land <output>0.30</output></span><input data-new-domain="land" type="range" min="0" max="1" step="0.05" value="0.30" /></label>
+                  <label><span>Sea <output>0.20</output></span><input data-new-domain="sea" type="range" min="0" max="1" step="0.05" value="0.20" /></label>
+                  <label><span>Air <output>0.20</output></span><input data-new-domain="air" type="range" min="0" max="1" step="0.05" value="0.20" /></label>
+                  <label><span>Space <output>0.20</output></span><input data-new-domain="space" type="range" min="0" max="1" step="0.05" value="0.20" /></label>
+                </div>
+              </article>
+
+              <article class="builder-card">
+                <div class="panel-head tight"><div><p class="eyebrow">04 · lv</p><h2>Livelli di sicurezza</h2></div><span class="pill">0–5</span></div>
+                <div class="builder-range-grid single" id="newLevelRanges">
+                  <label><span>Organization <output>2.50</output></span><input data-new-level="organization" type="range" min="0" max="5" step="0.25" value="2.50" /></label>
+                  <label><span>Intelligence <output>2.50</output></span><input data-new-level="intelligence" type="range" min="0" max="5" step="0.25" value="2.50" /></label>
+                  <label><span>Tool <output>2.50</output></span><input data-new-level="tool" type="range" min="0" max="5" step="0.25" value="2.50" /></label>
+                </div>
+              </article>
+
+              <article class="builder-card">
+                <div class="panel-head tight"><div><p class="eyebrow">05 · ipos</p><h2>Impatto atteso</h2></div></div>
+                <div class="builder-range-grid single" id="newImpactRanges">
+                  <label><span>Cognitive <output>0.50</output></span><input data-new-impact="cognitive" type="range" min="0" max="1" step="0.05" value="0.50" /></label>
+                  <label><span>Physical <output>0.50</output></span><input data-new-impact="physical" type="range" min="0" max="1" step="0.05" value="0.50" /></label>
+                  <label><span>Virtual <output>0.70</output></span><input data-new-impact="virtual" type="range" min="0" max="1" step="0.05" value="0.70" /></label>
+                </div>
+              </article>
+            </div>
+
+            <article class="builder-card builder-actions-card">
+              <div><span id="newScenarioStatus" class="muted-text">Compila i campi obbligatori e calcola lo scenario.</span><small>Formula rischio lordo: 25% cov + 25% caexp + 35% ipos + 15% maturity gap.</small></div>
+              <div class="builder-actions"><button id="resetNewScenario" class="secondary-button" type="button">Azzera</button><button class="primary-button" type="submit">Salva e calcola rischio</button></div>
+            </article>
+          </form>
+        </section>
+
+        <section id="framework-disarm" class="disarm-section" aria-label="DISARM threat mapping">
+          <article class="disarm-input-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">DISARM framework</p>
+                <h2>Threat-to-ATHENA mapping</h2>
+              </div>
+              <span id="disarmRiskPill" class="pill">risk -</span>
+            </div>
+
+            <div class="disarm-form">
+              <label class="search-field">
+                <span>Threat / campaign</span>
+                <input id="threatName" type="search" value="Coordinated disinformation on vehicle failures" />
+              </label>
+              <div class="disarm-form-grid">
+                <label class="select-field">
+                  <span>Primary tactic</span>
+                  <select id="disarmTactic"></select>
+                </label>
+                <label class="select-field">
+                  <span>Target audience</span>
+                  <select id="targetAudience">
+                    <option value="civil_population">Civil population</option>
+                    <option value="military_personnel">Military personnel</option>
+                    <option value="critical_infrastructure_operator">Critical infrastructure operator</option>
+                    <option value="decision_makers">Decision makers</option>
+                    <option value="allied_partners">Allied partners</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="search-field">
+                <span>Narrative / objective</span>
+                <input id="threatObjective" type="search" value="Amplify panic, reduce trust in navigation services, overload emergency response" />
+              </label>
+
+              <div class="disarm-techniques" id="disarmTechniques"></div>
+
+              <div class="context-actions">
+                <button id="mapDisarmBtn" class="primary-button" type="button">
+                  <span class="button-icon refresh-icon" aria-hidden="true"></span>
+                  Map to ATHENA
+                </button>
+                <span id="disarmStatus" class="muted-text">threat non applicata</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="disarm-output-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Threat flow</p>
+                <h2>Frameworks -> ATHENA</h2>
+              </div>
+              <span id="disarmTechniqueCount" class="pill">0 techniques</span>
+            </div>
+            <canvas id="disarmFlowCanvas" width="760" height="360" aria-label="Flusso DISARM verso ATHENA"></canvas>
+            <div id="threatFlowFrameworks" class="threat-flow-frameworks"></div>
+            <div id="athenaMappingCards" class="athena-mapping-cards"></div>
+          </article>
+        </section>
+
+        <section id="vulnerabilities" class="vulnerability-section" aria-label="Analisi vulnerabilita multi-dominio">
+          <article class="vulnerability-input-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Vulnerability intake</p>
+                <h2>Inserimento vulnerabilita multi-dominio</h2>
+              </div>
+              <span id="vulnerabilityTypePill" class="pill">software</span>
+            </div>
+
+            <div class="vulnerability-form">
+              <label class="select-field">
+                <span>Tipologia vulnerabilita</span>
+                <select id="vulnerabilityType">
+                  <option value="software_exploit">Software exploit / CVE</option>
+                  <option value="identity_compromise">Identity compromise</option>
+                  <option value="supply_chain">Supply chain compromise</option>
+                  <option value="ot_cps">OT / CPS exposure</option>
+                  <option value="gnss_spoofing">GNSS spoofing / jamming</option>
+                  <option value="communication_disruption">Communication disruption</option>
+                  <option value="data_poisoning">Data poisoning / model drift</option>
+                  <option value="disinformation">Disinformation / cognitive manipulation</option>
+                </select>
+              </label>
+
+              <label class="search-field">
+                <span>Asset o sistema impattato</span>
+                <input id="affectedAsset" type="search" value="connected vehicle fleet and navigation services" />
+              </label>
+
+              <div class="vulnerability-sliders">
+                <label>
+                  <span>Severita <b id="vulnSeverityOut">0.75</b></span>
+                  <input id="vulnSeverity" type="range" min="0" max="1" step="0.05" value="0.75" />
+                </label>
+                <label>
+                  <span>Esposizione <b id="vulnExposureOut">0.70</b></span>
+                  <input id="vulnExposure" type="range" min="0" max="1" step="0.05" value="0.70" />
+                </label>
+                <label>
+                  <span>Confidenza evidenze <b id="vulnConfidenceOut">0.65</b></span>
+                  <input id="vulnConfidence" type="range" min="0" max="1" step="0.05" value="0.65" />
+                </label>
+              </div>
+
+              <div class="domain-toggle-grid" aria-label="Domini militari coinvolti">
+                <label><input type="checkbox" data-domain-toggle="land" checked /> Land</label>
+                <label><input type="checkbox" data-domain-toggle="sea" /> Sea</label>
+                <label><input type="checkbox" data-domain-toggle="air" /> Air</label>
+                <label><input type="checkbox" data-domain-toggle="space" checked /> Space</label>
+                <label><input type="checkbox" data-domain-toggle="cyber" checked /> Cyber</label>
+              </div>
+
+              <div class="context-actions">
+                <button id="applyVulnerabilityBtn" class="primary-button" type="button">
+                  <span class="button-icon refresh-icon" aria-hidden="true"></span>
+                  Apply to scoring
+                </button>
+                <span id="vulnerabilityStatus" class="muted-text">profilo attivo non applicato</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="domain-impact-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Military domains</p>
+                <h2>Impatto stimato sui domini</h2>
+              </div>
+              <span id="dominantDomain" class="pill">-</span>
+            </div>
+            <canvas id="domainImpactCanvas" width="620" height="320" aria-label="Grafico impatto domini militari"></canvas>
+            <div id="domainImpactBars" class="domain-impact-bars"></div>
+          </article>
+        </section>
+
+        <section id="simulation" class="simulation-section" aria-label="Animazione attacco multi-dominio per scenario">
+          <article class="simulation-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Multi-domain animation</p>
+                <h2>Scenario attack cascade</h2>
+              </div>
+              <span id="simulationStepPill" class="pill">step 1/6</span>
+            </div>
+
+            <div class="simulation-controls">
+              <button id="simulationPlayBtn" class="primary-button" type="button">
+                <span class="button-icon play-icon" aria-hidden="true"></span>
+                <span id="simulationPlayLabel">Play</span>
+              </button>
+              <button id="simulationResetBtn" class="primary-button secondary" type="button">Reset</button>
+              <label class="select-field">
+                <span>Animated scenario</span>
+                <select id="simulationScenarioSelect"></select>
+              </label>
+              <label class="select-field compact">
+                <span>Speed</span>
+                <select id="simulationSpeed">
+                  <option value="1800">slow</option>
+                  <option value="1200" selected>normal</option>
+                  <option value="700">fast</option>
+                </select>
+              </label>
+            </div>
+
+            <canvas id="simulationCanvas" width="1120" height="520" aria-label="Animazione attacco multi-dominio per scenario"></canvas>
+
+            <div class="simulation-timeline" id="simulationTimeline"></div>
+            <div class="simulation-caption">
+              <strong id="simulationTitle">-</strong>
+              <span id="simulationDescription">-</span>
+            </div>
+          </article>
+
+          <article class="simulation-state-panel">
+            <div class="panel-head tight">
+              <div>
+                <p class="eyebrow">Domain state</p>
+                <h2>Impatto per dominio</h2>
+              </div>
+            </div>
+            <div id="simulationDomainState" class="simulation-domain-state"></div>
+            <div class="simulation-athena-box">
+              <span>ATHENA response</span>
+              <strong id="simulationAthenaResponse">-</strong>
+            </div>
+          </article>
+        </section>
+
+        <section id="matrix" class="matrix-decision-page" aria-label="ATHENA Matrix, ranking e decision">
+          <div class="matrix-section">
+            <article class="graph-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">P x D x L x E</p>
+                  <h2>ATHENA relation map</h2>
+                </div>
+                <span class="pill">visual reasoning</span>
+              </div>
+              <canvas id="relationCanvas" width="920" height="360" aria-label="Mappa relazioni ATHENA"></canvas>
+            </article>
+
+            <article class="vector-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Scenario vector</p>
+                  <h2>x = (co_v, ca_exp, l_v, i_pos)</h2>
+                </div>
+              </div>
+              <div class="vector-grid" id="vectorGrid"></div>
+            </article>
+          </div>
+
+          <div class="content-grid">
+            <article class="ranking-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Countermeasure candidates</p>
+                  <h2>Residual-risk ranking</h2>
+                </div>
+                <span id="candidateCount" class="pill">0 candidates</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Countermeasure</th>
+                      <th>Score</th>
+                      <th>Impact</th>
+                      <th>Controls</th>
+                      <th>Levels</th>
+                      <th>Approval</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rankingBody"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+
+          <div class="decision-section">
+            <article class="detail-panel">
+              <p class="eyebrow">Selected entity · Decision</p>
+              <h2 id="detailTitle">-</h2>
+              <div id="detailBadges" class="badge-row"></div>
+              <div class="score-breakdown">
+                <div>
+                  <span>Impact gap</span>
+                  <strong id="detailImpact">--</strong>
+                </div>
+                <div>
+                  <span>Control residual</span>
+                  <strong id="detailControls">--</strong>
+                </div>
+                <div>
+                  <span>Level gap</span>
+                  <strong id="detailLevels">--</strong>
+                </div>
+              </div>
+              <div class="axis-list">
+                <div>
+                  <span>Defensive capabilities</span>
+                  <div id="domainBars"></div>
+                </div>
+                <div>
+                  <span>Target levels</span>
+                  <div id="levelBars"></div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="framework-attack" class="framework-section framework-page" data-framework-name="MITRE ATT&amp;CK" aria-label="MITRE ATT&amp;CK Threat-to-ATHENA mapping">
+          <article class="framework-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">MITRE ATT&amp;CK framework</p>
+                <h2>Threat-to-ATHENA mapping</h2>
+              </div>
+              <span id="frameworkMatchCount" class="pill">0 mappings</span>
+            </div>
+            <div class="framework-source-grid single-source">
+              <a href="https://attack.mitre.org/" target="_blank" rel="noreferrer">
+                <span>MITRE</span>
+                <strong>ATT&amp;CK</strong>
+              </a>
+            </div>
+            <div class="table-wrap framework-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Framework</th>
+                    <th>Tactic / phase</th>
+                    <th>Technique</th>
+                    <th>Scenario trigger</th>
+                    <th>ATHENA response</th>
+                  </tr>
+                </thead>
+                <tbody id="frameworkMappingBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="framework-detail-panel">
+            <div class="panel-head tight">
+              <div>
+                <p class="eyebrow">Coverage</p>
+                <h2>Dominio e contromisure</h2>
+              </div>
+            </div>
+            <div id="frameworkCoverageCards" class="framework-coverage-cards"></div>
+            <div class="framework-note">
+              <span>Mapping note</span>
+              <strong id="frameworkMappingNote">-</strong>
+            </div>
+          </article>
+        </section>
+
+        <section id="framework-atlas" class="framework-section framework-page" data-framework-name="MITRE ATLAS" aria-label="MITRE ATLAS Threat-to-ATHENA mapping">
+          <article class="framework-panel">
+            <div class="panel-head"><div><p class="eyebrow">MITRE ATLAS framework</p><h2>AI/ML Threat-to-ATHENA mapping</h2></div><span data-framework-count class="pill">0 mappings</span></div>
+            <div class="framework-source-grid single-source"><a href="https://atlas.mitre.org/" target="_blank" rel="noreferrer"><span>MITRE</span><strong>ATLAS</strong></a></div>
+            <div class="table-wrap framework-table-wrap"><table><thead><tr><th>Framework</th><th>Tactic / phase</th><th>Technique</th><th>Scenario trigger</th><th>ATHENA response</th></tr></thead><tbody data-framework-body></tbody></table></div>
+          </article>
+          <article class="framework-detail-panel"><div class="panel-head tight"><div><p class="eyebrow">Coverage</p><h2>AI, domini e contromisure</h2></div></div><div data-framework-coverage class="framework-coverage-cards"></div><div class="framework-note"><span>Mapping note</span><strong data-framework-note>-</strong></div></article>
+        </section>
+
+        <section id="framework-space-shield" class="framework-section framework-page" data-framework-name="ESA SPACE-SHIELD" aria-label="ESA SPACE-SHIELD Threat-to-ATHENA mapping">
+          <article class="framework-panel">
+            <div class="panel-head"><div><p class="eyebrow">ESA SPACE-SHIELD framework</p><h2>Space Threat-to-ATHENA mapping</h2></div><span data-framework-count class="pill">0 mappings</span></div>
+            <div class="framework-source-grid single-source"><a href="https://spaceshield.esa.int/" target="_blank" rel="noreferrer"><span>ESA</span><strong>SPACE-SHIELD</strong></a></div>
+            <div class="table-wrap framework-table-wrap"><table><thead><tr><th>Framework</th><th>Tactic / phase</th><th>Technique</th><th>Scenario trigger</th><th>ATHENA response</th></tr></thead><tbody data-framework-body></tbody></table></div>
+          </article>
+          <article class="framework-detail-panel"><div class="panel-head tight"><div><p class="eyebrow">Coverage</p><h2>Space domain e contromisure</h2></div></div><div data-framework-coverage class="framework-coverage-cards"></div><div class="framework-note"><span>Mapping note</span><strong data-framework-note>-</strong></div></article>
+        </section>
+
+        <section id="kg-schema" class="schema-section" aria-label="ATHENA Knowledge Graph Schema v0.1">
+          <article class="schema-hero panel-card">
+            <div>
+              <p class="eyebrow">ATHENA Knowledge Graph Schema v0.1</p>
+              <h2>OpenCTI intelligence, ATHENA reasoning, decision learning</h2>
+              <p>Lo schema separa gli oggetti CTI nativi dagli stati scenario-specifici. Le definizioni restano stabili; ogni nuovo scenario aggiunge nodi, edge e attributi EAV senza modificare le colonne.</p>
+            </div>
+            <div class="schema-metrics">
+              <div><span>Classes</span><strong id="schemaClassCount">0</strong></div>
+              <div><span>Relations</span><strong id="schemaRelationCount">0</strong></div>
+              <div><span>Record kinds</span><strong>NODE / EDGE</strong></div>
+            </div>
+          </article>
+
+          <article class="kg-stack panel-card">
+            <div class="panel-head tight"><div><p class="eyebrow">Logical separation</p><h2>Tre Knowledge Graph interconnessi</h2></div></div>
+            <div class="kg-stack-grid">
+              <div class="kg-stage opencti"><span>KG-1 · SOURCE OF TRUTH</span><strong>Threat Intelligence</strong><p>OpenCTI · STIX 2.1 · ATT&amp;CK</p></div>
+              <div class="kg-arrow">→</div>
+              <div class="kg-stage risk"><span>KG-2 · ATHENA</span><strong>Multi-Domain Risk</strong><p>Scenario · Assets · States · Effects</p></div>
+              <div class="kg-arrow">→</div>
+              <div class="kg-stage decision"><span>KG-3 · ATHENA</span><strong>Countermeasure Knowledge</strong><p>Evaluation · Decision · Outcome</p></div>
+            </div>
+          </article>
+
+          <article class="schema-browser panel-card">
+            <div class="panel-head"><div><p class="eyebrow">Formal class catalog</p><h2>Classi, source e mapping STIX/OpenCTI</h2></div><span id="schemaVisibleCount" class="pill">0 visible</span></div>
+            <div class="schema-toolbar">
+              <label class="search-field"><span>Cerca</span><input id="schemaSearch" type="search" placeholder="ControlState, OpenCTI, Decision..." /></label>
+              <label class="select-field compact"><span>Layer</span><select id="schemaLayerFilter"><option value="all">tutti i layer</option></select></label>
+            </div>
+            <div class="table-wrap schema-table-wrap"><table class="schema-table"><thead><tr><th>ID / Class</th><th>Layer</th><th>Attributi chiave</th><th>Relazioni / cardinalità</th><th>Source</th><th>STIX/OpenCTI</th></tr></thead><tbody id="schemaClassBody"></tbody></table></div>
+          </article>
+
+          <article class="state-panel panel-card">
+            <div class="panel-head tight"><div><p class="eyebrow">Scenario state reconstruction</p><h2>x<sub>SCN</sub> = (cov, caexp, lv, ipos)</h2></div></div>
+            <div class="state-query-grid">
+              <div><span>ControlState</span><b>cov</b><small>compromissione controlli</small></div>
+              <div><span>CapabilityExposureState</span><b>caexp</b><small>esposizione capability</small></div>
+              <div><span>SecurityLevelState</span><b>lv</b><small>Organization · Intelligence · Tool</small></div>
+              <div><span>ImpactState</span><b>ipos</b><small>Physical · Cognitive · Virtual</small></div>
+            </div>
+          </article>
+
+          <article class="pipeline-panel panel-card">
+            <div class="panel-head tight"><div><p class="eyebrow">Processing pipeline</p><h2>Dall'input al learning loop</h2></div></div>
+            <div id="schemaPipeline" class="schema-pipeline"></div>
+          </article>
+
+          <article class="population-panel panel-card">
+            <div class="panel-head"><div><p class="eyebrow">Universal population schema</p><h2>Formato EAV stabile per ogni scenario</h2></div><button id="downloadPopulationSchema" class="primary-button" type="button">Scarica CSV schema</button></div>
+            <div class="population-layout">
+              <div><p class="muted-text">Ogni riga è un nodo o una relazione. Gli attributi specifici usano <code>attribute_key</code> e <code>attribute_value</code>.</p><div id="populationFields" class="field-cloud"></div></div>
+              <pre id="populationExample" class="schema-code"></pre>
+            </div>
+          </article>
+        </section>
+        </div>
+
+        <section id="nato-dashboard" class="dashboard-view nato-dashboard" aria-label="Dashboard caso NATO">
+          <article class="nato-hero-panel">
+            <div>
+              <p class="eyebrow">NATO / CCDCOE case dashboard</p>
+              <h2 id="natoCaseTitle">Caso NATO sviluppato in ATHENA</h2>
+              <p id="natoCaseDescription">-</p>
+            </div>
+            <div class="nato-source-box">
+              <label class="select-field compact">
+                <span>Case</span>
+                <select id="natoCaseSelect"></select>
+              </label>
+              <span>Scenario</span>
+              <strong id="natoScenarioLabel">SCN-009</strong>
+              <a id="natoSourceLink" href="https://www.wired.com/story/notpetya-petya-russia-cause/" target="_blank" rel="noreferrer">Fonte NATO/CCDCOE citata</a>
+            </div>
+          </article>
+
+          <div class="nato-grid">
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Case timeline</p>
+                  <h2>Sequenza osservata e ricostruzione difensiva</h2>
+                </div>
+              </div>
+              <div id="natoTimeline" class="nato-timeline"></div>
+            </article>
+
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Scenario variants</p>
+                  <h2>Sotto-scenari in KB</h2>
+                </div>
+                <span id="natoScenarioVariantCount" class="pill">0 scenarios</span>
+              </div>
+              <div id="natoCaseScenarios" class="nato-case-scenarios"></div>
+            </article>
+          </div>
+
+          <div class="nato-grid">
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Attack chain</p>
+                  <h2>Da update compromesso a impatto multi-dominio</h2>
+                </div>
+              </div>
+              <canvas id="natoFlowCanvas" width="980" height="360" aria-label="Flusso attacco NATO sviluppato in ATHENA"></canvas>
+              <div id="natoFlowSteps" class="nato-flow-steps"></div>
+            </article>
+
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">ATHENA vector</p>
+                  <h2>x = co_v, ca_exp, l_v, i_pos</h2>
+                </div>
+                <span id="natoTopDomain" class="pill">-</span>
+              </div>
+              <div id="natoAthenaVector" class="nato-vector-grid"></div>
+            </article>
+          </div>
+
+          <div class="nato-grid">
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Framework mapping</p>
+                  <h2 id="natoFrameworkTitle">MITRE ATT&amp;CK + ATHENA response</h2>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Phase</th>
+                      <th>Technique / evidence</th>
+                      <th>ATHENA axis</th>
+                      <th>Countermeasure</th>
+                    </tr>
+                  </thead>
+                  <tbody id="natoFrameworkBody"></tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="nato-panel">
+              <div class="panel-head tight">
+                <div>
+                  <p class="eyebrow">Countermeasure ranking</p>
+                  <h2 id="natoResponseTitle">Risposta ATHENA</h2>
+                </div>
+                <span id="natoCandidateCount" class="pill">0 candidates</span>
+              </div>
+              <div id="natoCountermeasureCards" class="nato-countermeasure-cards"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="kb-data.js"></script>
+    <script src="schema-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+relationship_type,source_class,target_class,source_cardinality,target_cardinality,mandatory
+contains,Scenario,ThreatEvent,1,1..*,true
+targets,ThreatEvent,MultiDomainAsset,1..*,1..*,true
+performedBy,ThreatEvent,Adversary,1..*,0..*,false
+uses,ThreatEvent,OffensiveCapability,1..*,1..*,true
+operatesIn,MultiDomainAsset,Domain,1,1..*,true
+forControl,ControlState,SecurityControl,1,1,true
+forScenario,ControlState,Scenario,1,1,true
+forLevelType,SecurityLevelState,SecurityLevelType,1,1,true
+forDimension,ImpactState,EffectDimension,1,1,true
+evaluates,CountermeasureEvaluation,Countermeasure,1,1,true
+resultsFrom,Outcome,Deployment,1,1,true
+derivedFrom,KnowledgeAssertion,Evidence,1,1..*,true

@@ -1,0 +1,26 @@
+vocabulary,value,label
+record_kind,NODE,Node
+record_kind,EDGE,Relationship
+domain,cyber,Cyber
+domain,land,Land
+domain,sea,Sea
+domain,air,Air
+domain,space,Space
+process,govern,Governance
+process,detect,Detection
+process,respond,Response
+process,prevent,Prevention
+security_level,organization,Organization
+security_level,intelligence,Intelligence
+security_level,tool,Tool
+effect_dimension,physical,Physical
+effect_dimension,cognitive,Cognitive
+effect_dimension,virtual,Virtual
+assertion_type,observed,Observed
+assertion_type,reported,Reported
+assertion_type,inferred,Inferred
+assertion_type,predicted,Predicted
+assertion_type,expert_validated,Expert validated
+decision_type,accept,Accept
+decision_type,reject,Reject
+decision_type,override,Override

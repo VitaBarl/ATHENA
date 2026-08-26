@@ -1,0 +1,14 @@
+ATHENA - AVVIO RAPIDO
+
+1. Fai doppio clic su AVVIA_ATHENA.command.
+2. La home si apre nel browser all'indirizzo http://localhost:8765/.
+3. Lascia aperta la finestra Terminale mentre usi ATHENA.
+4. Per fermare il sistema premi Ctrl+C nella finestra Terminale.
+
+Contenuti:
+- console/: dashboard operativa e scoring delle contromisure;
+- ontology/: esploratore del Knowledge Graph;
+- docs/: documentazione, playbook e template;
+- data/: knowledge base YAML/JSON e risultati in formato Office.
+
+Il sistema funziona in locale e non invia dati a servizi esterni.

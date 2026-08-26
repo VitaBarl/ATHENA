@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ATHENA Core Ontology Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar" aria-label="Navigazione ontologia">
+      <div class="brand">
+        <span class="brand-mark">A</span>
+        <div>
+          <strong>ATHENA</strong>
+          <small>Core Ontology v0.1</small>
+        </div>
+      </div>
+      <nav>
+        <a href="#overview">Overview</a>
+        <a href="#graph">Ontology Graph</a>
+        <a href="#classes">Class Browser</a>
+        <a href="#properties">Properties</a>
+        <a href="#athena">ATHENA Operations</a>
+        <a href="#example">Example</a>
+      </nav>
+      <div class="source-card">
+        <span>Source</span>
+        <strong id="sourceName">ATHENA-Core-Ontology-v0.1.ttl</strong>
+        <small id="loadStatus">loading ontology...</small>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="hero" id="overview">
+        <div>
+          <p class="eyebrow">Ontology-driven countermeasure reasoning</p>
+          <h1>ATHENA Core Ontology Dashboard</h1>
+          <p>
+            Vista operativa dell'ontologia ATHENA: classi, proprieta', individui canonici,
+            assi P-D-L-E e relazioni utili per costruire una Knowledge Base interrogabile.
+          </p>
+        </div>
+        <div class="hero-panel">
+          <span>Tensor model</span>
+          <strong>P x D x L x E -> CC</strong>
+          <small>process, domain, level, effect, countermeasure class</small>
+        </div>
+      </header>
+
+      <section class="metric-grid" aria-label="Metriche ontologia">
+        <article>
+          <span>Classes</span>
+          <strong id="classCount">0</strong>
+        </article>
+        <article>
+          <span>Object properties</span>
+          <strong id="objectPropertyCount">0</strong>
+        </article>
+        <article>
+          <span>Datatype properties</span>
+          <strong id="datatypePropertyCount">0</strong>
+        </article>
+        <article>
+          <span>Named individuals</span>
+          <strong id="individualCount">0</strong>
+        </article>
+      </section>
+
+      <section class="panel graph-panel" id="graph">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Ontology Graph</p>
+            <h2>Relazioni principali</h2>
+          </div>
+          <label class="select-field">
+            <span>Focus</span>
+            <select id="graphFocus">
+              <option value="all">Core ontology</option>
+              <option value="threat">Threat model</option>
+              <option value="athena">ATHENA axes</option>
+              <option value="decision">Decision support</option>
+            </select>
+          </label>
+        </div>
+        <svg id="ontologyGraph" role="img" aria-label="Grafo delle relazioni ontologiche"></svg>
+        <div id="selectedNode" class="selected-node">Seleziona un nodo nel grafo per vedere definizione e relazioni.</div>
+      </section>
+
+      <section class="two-column">
+        <article class="panel" id="classes">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Class Browser</p>
+              <h2>Classi e gerarchie</h2>
+            </div>
+            <input id="classSearch" class="search" type="search" placeholder="Cerca classe, label o definizione" />
+          </div>
+          <div id="classList" class="entity-list"></div>
+        </article>
+
+        <article class="panel" id="properties">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Properties</p>
+              <h2>Dominio e range</h2>
+            </div>
+            <select id="propertyFilter" class="compact-select">
+              <option value="all">Tutte</option>
+              <option value="object">Object</option>
+              <option value="datatype">Datatype</option>
+            </select>
+          </div>
+          <div id="propertyList" class="entity-list"></div>
+        </article>
+      </section>
+
+      <section class="panel athena-panel" id="athena">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">ATHENA Operations</p>
+            <h2>Come usare l'ontologia per rendere operativa la KB</h2>
+          </div>
+        </div>
+        <div class="operation-grid">
+          <article>
+            <span>1</span>
+            <strong>Scenario</strong>
+            <p>Istanzia <code>athena:Scenario</code> e collega <code>athena:ThreatEvent</code>.</p>
+          </article>
+          <article>
+            <span>2</span>
+            <strong>Threat model</strong>
+            <p>Collega actor, capability, infrastructure, victim, asset, technique e vulnerability.</p>
+          </article>
+          <article>
+            <span>3</span>
+            <strong>ATHENA vector</strong>
+            <p>Mappa processo, dominio, livello ed effetto tramite <code>athena:ATHENAMapping</code>.</p>
+          </article>
+          <article>
+            <span>4</span>
+            <strong>Countermeasure</strong>
+            <p>Raccomanda contromisure con evidenza, score, rationale, rank e vincoli operativi.</p>
+          </article>
+        </div>
+        <div class="axis-grid" id="axisGrid"></div>
+      </section>
+
+      <section class="panel example-panel" id="example">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Operational Example</p>
+            <h2>GNSS spoofing su veicolo autonomo</h2>
+          </div>
+          <label class="select-field">
+            <span>Passaggio</span>
+            <select id="exampleStep"></select>
+          </label>
+        </div>
+        <div class="example-layout">
+          <div>
+            <div id="exampleNarrative" class="example-narrative"></div>
+            <div class="example-vector" aria-label="Vettore ATHENA dello scenario">
+              <article>
+                <span>P</span>
+                <strong>Detect + Respond</strong>
+                <small>processo di sicurezza attivato</small>
+              </article>
+              <article>
+                <span>D</span>
+                <strong>Space + Land + Cyber</strong>
+                <small>domini interessati</small>
+              </article>
+              <article>
+                <span>L</span>
+                <strong>Intelligence + Tool</strong>
+                <small>livelli da rafforzare</small>
+              </article>
+              <article>
+                <span>E</span>
+                <strong>Physical + Cognitive</strong>
+                <small>effetti principali</small>
+              </article>
+            </div>
+          </div>
+          <svg id="exampleGraph" role="img" aria-label="Esempio di istanziazione ATHENA"></svg>
+        </div>
+        <div class="ttl-snippet">
+          <div class="panel-head compact">
+            <div>
+              <p class="eyebrow">TTL instance pattern</p>
+              <h2>Triple RDF dell'esempio</h2>
+            </div>
+          </div>
+          <pre id="exampleTtl"></pre>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
